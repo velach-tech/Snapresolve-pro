@@ -1,30 +1,52 @@
 import React, { useState } from "react";
-import { evaluate } from "mathjs";
 
 export default function Calculator({ addHistory }) {
   const [input, setInput] = useState("");
+  const [result, setResult] = useState("");
 
-  const handleClick = (value) => setInput((prev) => prev + value);
-  const handleClear = () => setInput("");
-  const handleCalculate = () => {
+  const handleClick = (value) => {
+    setInput((prev) => prev + value);
+  };
+
+  const clear = () => {
+    setInput("");
+    setResult("");
+  };
+
+  const calculate = () => {
     try {
-      const result = evaluate(input);
-      addHistory(`${input} = ${result}`);
-      setInput(result.toString());
-    } catch {
-      setInput("Error");
+      // Safe evaluation using Function instead of eval
+      const res = Function(`"use strict"; return (${input})`)();
+      setResult(res);
+      addHistory(`${input} = ${res}`);
+    } catch (err) {
+      setResult("Error");
     }
   };
 
+  const buttons = [
+    "7", "8", "9", "/", 
+    "4", "5", "6", "*", 
+    "1", "2", "3", "-", 
+    "0", ".", "=", "+"
+  ];
+
   return (
     <div className="calculator">
-      <input type="text" value={input} readOnly />
-      <div className="keys">
-        {["7","8","9","/","4","5","6","*","1","2","3","-","0",".","+","^"].map((v) => (
-          <button key={v} onClick={() => handleClick(v)}>{v}</button>
-        ))}
-        <button onClick={handleClear}>C</button>
-        <button onClick={handleCalculate}>=</button>
+      <div className="display">
+        <div className="input">{input}</div>
+        <div className="result">{result}</div>
+      </div>
+
+      <div className="buttons">
+        <button className="clear" onClick={clear}>C</button>
+        {buttons.map((btn, i) =>
+          btn === "=" ? (
+            <button key={i} onClick={calculate}>{btn}</button>
+          ) : (
+            <button key={i} onClick={() => handleClick(btn)}>{btn}</button>
+          )
+        )}
       </div>
     </div>
   );

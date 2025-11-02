@@ -54,6 +54,23 @@ nav button:hover {
   --btn: #1f1f1f;
   --btn-hover: #333;
   --btn-text: #f4f4f4;
+}/* Theme Switcher */
+.theme-switcher {
+  margin-top: 0.5rem;
+}
+
+.theme-switcher button {
+  background: none;
+  border: 1px solid var(--btn-hover);
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.theme-switcher button:hover {
+  background: var(--btn-hover);
 }
 
 /* Panels */

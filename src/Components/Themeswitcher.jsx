@@ -1,11 +1,15 @@
 import React from "react";
 
 export default function ThemeSwitcher({ theme, setTheme }) {
-  const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
 
   return (
-    <button onClick={toggleTheme} className="theme-switcher">
-      {theme === "light" ? "🌙 Dark" : "☀️ Light"}
-    </button>
+    <div className="theme-switcher">
+      <button onClick={toggleTheme}>
+        {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+      </button>
+    </div>
   );
 }

@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import Tesseract from "tesseract.js";
-import { evaluate } from "mathjs";
 
 export default function CameraSolver({ addHistory }) {
   const [image, setImage] = useState(null);
-  const [output, setOutput] = useState("Upload or capture an image of an equation");
+  const [recognizedText, setRecognizedText] = useState("");
+  const [result, setResult] = useState("");
 
-  const handleUpload = (e) => {
+  const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImage(URL.createObjectURL(file));
@@ -15,28 +14,47 @@ export default function CameraSolver({ addHistory }) {
   };
 
   const extractText = async (file) => {
-    setOutput("Reading equation...");
     try {
-      const result = await Tesseract.recognize(file, "eng");
-      const text = result.data.text.replace(/\n/g, " ");
-      setOutput(`Detected: ${text}`);
-      try {
-        const ans = evaluate(text);
-        addHistory(`${text} = ${ans}`);
-        setOutput(`${text} = ${ans}`);
-      } catch {
-        setOutput(`Couldn't calculate "${text}"`);
-      }
+      const { createWorker } = await import("tesseract.js");
+      const worker = await createWorker("eng");
+      const {
+        data: { text },
+      } = await worker.recognize(file);
+      await worker.terminate();
+      setRecognizedText(text.trim());
+    } catch (err) {
+      setRecognizedText("Error reading image");
+    }
+  };
+
+  const solveMath = () => {
+    try {
+      const clean = recognizedText.replace(/[^-()\d/*+.]/g, "");
+      const res = Function(`"use strict"; return (${clean})`)();
+      setResult(res);
+      addHistory(`${recognizedText} = ${res}`);
     } catch {
-      setOutput("Error reading image");
+      setResult("Unable to solve");
     }
   };
 
   return (
-    <div className="camera-panel">
-      <input type="file" accept="image/*" onChange={handleUpload} />
-      {image && <img src={image} alt="Uploaded" style={{ maxWidth: "100%", marginTop: "1rem" }} />}
-      <p>{output}</p>
+    <div className="camera-solver">
+      <h3>📸 Snap & Solve</h3>
+      <input type="file" accept="image/*" onChange={handleImageUpload} />
+
+      {image && <img src={image} alt="Uploaded" className="preview" />}
+
+      {recognizedText && (
+        <>
+          <p><strong>Recognized Text:</strong> {recognizedText}</p>
+          <button onClick={solveMath}>Solve</button>
+        </>
+      )}
+
+      {result && (
+        <p><strong>Result:</strong> {result}</p>
+      )}
     </div>
   );
 }

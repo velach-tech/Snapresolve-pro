@@ -1,45 +1,59 @@
-import React, { useEffect, useRef } from "react";
-import { create, all } from "mathjs";
-
-const math = create(all);
+import React, { useEffect, useRef, useState } from "react";
 
 export default function GraphPanel() {
-  const canvasRef = useRef(null);
+  const [expression, setExpression] = useState("sin(x)");
+  const plotRef = useRef(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    const width = canvas.width;
-    const height = canvas.height;
+    const loadPlotly = async () => {
+      const Plotly = (await import("plotly.js-dist-min")).default;
+      plotGraph(Plotly);
+    };
+    loadPlotly();
+  }, [expression]);
 
-    ctx.clearRect(0, 0, width, height);
-    ctx.strokeStyle = "#888";
+  const plotGraph = (Plotly) => {
+    const xValues = Array.from({ length: 200 }, (_, i) => i / 10 - 10);
+    let yValues;
 
-    // axes
-    ctx.beginPath();
-    ctx.moveTo(width / 2, 0);
-    ctx.lineTo(width / 2, height);
-    ctx.moveTo(0, height / 2);
-    ctx.lineTo(width, height / 2);
-    ctx.stroke();
-
-    // example graph y = sin(x)
-    ctx.beginPath();
-    ctx.strokeStyle = "#00aaff";
-    for (let x = -Math.PI * 2; x <= Math.PI * 2; x += 0.1) {
-      const y = Math.sin(x);
-      const px = width / 2 + x * 40;
-      const py = height / 2 - y * 40;
-      if (x === -Math.PI * 2) ctx.moveTo(px, py);
-      else ctx.lineTo(px, py);
+    try {
+      // eslint-disable-next-line no-new-func
+      yValues = xValues.map((x) => Function("x", `return ${expression}`)(x));
+    } catch {
+      yValues = xValues.map(() => null);
     }
-    ctx.stroke();
-  }, []);
+
+    const trace = {
+      x: xValues,
+      y: yValues,
+      type: "scatter",
+      mode: "lines",
+      line: { width: 2 },
+    };
+
+    const layout = {
+      title: `Graph of y = ${expression}`,
+      xaxis: { title: "x" },
+      yaxis: { title: "y" },
+      margin: { t: 40 },
+      paper_bgcolor: "transparent",
+      plot_bgcolor: "transparent",
+      font: { color: "var(--text)" },
+    };
+
+    Plotly.newPlot(plotRef.current, [trace], layout, { responsive: true });
+  };
 
   return (
     <div className="graph-panel">
-      <canvas ref={canvasRef} width="400" height="300"></canvas>
-      <p>Sample graph: y = sin(x)</p>
+      <h3>📈 Graph Plotter</h3>
+      <input
+        type="text"
+        value={expression}
+        onChange={(e) => setExpression(e.target.value)}
+        placeholder="Enter function e.g. sin(x)"
+      />
+      <div ref={plotRef} className="graph"></div>
     </div>
   );
 }

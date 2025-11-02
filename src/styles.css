@@ -89,3 +89,32 @@ footer {
   font-size: 0.85rem;
   opacity: 0.6;
 }
+/* Camera Solver */
+.camera-solver {
+  text-align: center;
+}
+
+.camera-solver input {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.camera-solver .preview {
+  max-width: 100%;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+}
+
+.camera-solver button {
+  background-color: var(--btn);
+  color: var(--btn-text);
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.camera-solver button:hover {
+  background-color: var(--btn-hover);
+}

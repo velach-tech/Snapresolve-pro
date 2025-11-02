@@ -1,0 +1,74 @@
+/* General layout */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: 0.3s ease-in-out;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+header {
+  padding: 1rem;
+  text-align: center;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+nav button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  background-color: var(--btn);
+  color: var(--btn-text);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+nav button:hover {
+  background-color: var(--btn-hover);
+}
+
+/* Themes */
+.app.light {
+  --bg: #f4f6fa;
+  --text: #111;
+  --btn: #ffffff;
+  --btn-hover: #e0e0e0;
+  --btn-text: #111;
+}
+
+.app.dark {
+  --bg: #121212;
+  --text: #f4f4f4;
+  --btn: #1f1f1f;
+  --btn-hover: #333;
+  --btn-text: #f4f4f4;
+}
+
+/* Panels */
+main {
+  width: 90%;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+footer {
+  margin-top: auto;
+  padding: 1rem;
+  font-size: 0.85rem;
+  opacity: 0.6;
+}

@@ -1,2 +1,0 @@
-# Snapresolve-pro
-Snapresolve-pro

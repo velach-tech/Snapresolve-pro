@@ -118,3 +118,24 @@ footer {
 .camera-solver button:hover {
   background-color: var(--btn-hover);
 }
+/* History Panel */
+.history-panel {
+  width: 100%;
+  text-align: left;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.history-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.history-panel li {
+  background: rgba(255, 255, 255, 0.05);
+  margin-bottom: 0.4rem;
+  padding: 0.6rem;
+  border-radius: 6px;
+}

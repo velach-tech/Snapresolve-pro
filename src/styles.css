@@ -139,3 +139,22 @@ footer {
   padding: 0.6rem;
   border-radius: 6px;
 }
+/* Graph Panel */
+.graph-panel {
+  text-align: center;
+}
+
+.graph-panel input {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--btn-hover);
+  background: none;
+  color: var(--text);
+}
+
+.graph {
+  width: 100%;
+  height: 300px;
+}

@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// ✅ Adjust base for GitHub Pages
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/Snapsolve-pro/',
+  base: './',  // <-- this makes it load correctly on GitHub Pages
 })

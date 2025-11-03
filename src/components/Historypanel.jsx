@@ -1,14 +1,18 @@
-// Original content of Historypanel.jsx
-// This file controls the history panel features
+import React from "react";
 
-import React from 'react';
-
-const HistoryPanel = () => {
-    return (
-        <div>
-            <h1>History Panel</h1>
-        </div>
-    );
-};
-
-export default HistoryPanel;
+export default function HistoryPanel({ history }) {
+  return (
+    <div className="history-panel">
+      <h3>🧾 Calculation History</h3>
+      {history.length === 0 ? (
+        <p>No history yet...</p>
+      ) : (
+        <ul>
+          {history.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}

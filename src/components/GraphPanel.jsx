@@ -1,59 +1,60 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
+import Plotly from "plotly.js-dist-min";
 
-export default function GraphPanel() {
-  const [expression, setExpression] = useState("sin(x)");
-  const plotRef = useRef(null);
+const GraphPanel = ({ expression }) => {
+  const graphRef = useRef(null);
 
   useEffect(() => {
-    const loadPlotly = async () => {
-      const Plotly = (await import("plotly.js-dist-min")).default;
-      plotGraph(Plotly);
-    };
-    loadPlotly();
-  }, [expression]);
-
-  const plotGraph = (Plotly) => {
-    const xValues = Array.from({ length: 200 }, (_, i) => i / 10 - 10);
-    let yValues;
+    if (!expression) return;
 
     try {
-      // eslint-disable-next-line no-new-func
-      yValues = xValues.map((x) => Function("x", `return ${expression}`)(x));
-    } catch {
-      yValues = xValues.map(() => null);
+      const xValues = [];
+      const yValues = [];
+
+      for (let x = -10; x <= 10; x += 0.1) {
+        // Using math.js safely
+        const math = window.math || require("mathjs");
+        const scope = { x };
+        const y = math.evaluate(expression, scope);
+        xValues.push(x);
+        yValues.push(y);
+      }
+
+      const trace = {
+        x: xValues,
+        y: yValues,
+        type: "scatter",
+        mode: "lines",
+        line: { width: 2 },
+      };
+
+      const layout = {
+        title: `Graph of y = ${expression}`,
+        margin: { t: 40 },
+        paper_bgcolor: "#f8f8f8",
+        plot_bgcolor: "#f8f8f8",
+        xaxis: { title: "x" },
+        yaxis: { title: "y" },
+      };
+
+      Plotly.newPlot(graphRef.current, [trace], layout, { displayModeBar: false });
+    } catch (err) {
+      console.error("Invalid expression for graph:", err);
     }
-
-    const trace = {
-      x: xValues,
-      y: yValues,
-      type: "scatter",
-      mode: "lines",
-      line: { width: 2 },
-    };
-
-    const layout = {
-      title: `Graph of y = ${expression}`,
-      xaxis: { title: "x" },
-      yaxis: { title: "y" },
-      margin: { t: 40 },
-      paper_bgcolor: "transparent",
-      plot_bgcolor: "transparent",
-      font: { color: "var(--text)" },
-    };
-
-    Plotly.newPlot(plotRef.current, [trace], layout, { responsive: true });
-  };
+  }, [expression]);
 
   return (
-    <div className="graph-panel">
-      <h3>📈 Graph Plotter</h3>
-      <input
-        type="text"
-        value={expression}
-        onChange={(e) => setExpression(e.target.value)}
-        placeholder="Enter function e.g. sin(x)"
-      />
-      <div ref={plotRef} className="graph"></div>
-    </div>
+    <div
+      ref={graphRef}
+      style={{
+        width: "100%",
+        height: "300px",
+        borderRadius: "10px",
+        background: "#fff",
+        marginTop: "20px",
+      }}
+    />
   );
-}
+};
+
+export default GraphPanel;
